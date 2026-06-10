@@ -1,6 +1,6 @@
 {
-  "name": "EcoLens: Your Carbon Awareness Partner",
-  "description": "An animated, eco-conscious carbon footprint tracker equipped with interactive logging, AI challenges, and a smart decision assistant.",
+  "name": "ecolens",
+  "description": "An eco-conscious carbon footprint tracker with interactive logging, AI challenges, and a smart decision assistant.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -27,6 +27,7 @@ export default function ImpactGauge({ activities, dailyLimit }: ImpactGaugeProps
 
   // Smooth numeric counter using standard React state safe from object-child errors
   const [displayNum, setDisplayNum] = useState('0.0');
+  const [chartMounted, setChartMounted] = useState(false);
 
   useEffect(() => {
     const fromVal = parseFloat(displayNum) || 0;
@@ -39,6 +40,10 @@ export default function ImpactGauge({ activities, dailyLimit }: ImpactGaugeProps
     });
     return () => controls.stop();
   }, [todayEmissions]);
+
+  useEffect(() => {
+    setChartMounted(true);
+  }, []);
 
   // Group emissions by category for our Recharts chart
   const chartData = useMemo(() => {
@@ -163,23 +168,25 @@ export default function ImpactGauge({ activities, dailyLimit }: ImpactGaugeProps
           </span>
         </div>
         <div className="h-44 w-full flex-1 min-h-[160px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-              <XAxis dataKey="name" tick={{ fill: '#4E5352', fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#86948D', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip 
-                cursor={{ fill: 'rgba(86, 143, 117, 0.05)' }}
-                contentStyle={{ background: '#FFFFFF', border: '1px solid #DFE5E1', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}
-                labelClassName="font-extrabold text-xs text-charcoal font-display"
-                itemStyle={{ color: '#568F75', fontSize: '12px', fontWeight: '500' }}
-              />
-              <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={28}>
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[entry.name] || '#568F75'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          {chartMounted && (
+            <ResponsiveContainer width="100%" height={160}>
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <XAxis dataKey="name" tick={{ fill: '#4E5352', fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#86948D', fontSize: 10 }} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  cursor={{ fill: 'rgba(86, 143, 117, 0.05)' }}
+                  contentStyle={{ background: '#FFFFFF', border: '1px solid #DFE5E1', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}
+                  labelClassName="font-extrabold text-xs text-charcoal font-display"
+                  itemStyle={{ color: '#568F75', fontSize: '12px', fontWeight: '500' }}
+                />
+                <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={28}>
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name] || '#568F75'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </div>
